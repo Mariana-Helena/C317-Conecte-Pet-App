@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pets.dart';
+import 'vacinas.dart';
+import 'consultas.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +13,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Conecte Pet',
       debugShowCheckedModeBanner: false,
-      home: LoginDemo(),
+      routes: {
+        '/': (context) => LoginDemo(),
+        '/pets': (context) => Pets(),
+        '/consultas': (context) => Consultas(),
+        '/vacinas': (context) => Vacinas(),
+      },
     );
   }
 }

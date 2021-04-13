@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
 
-class Pets extends StatelessWidget {
+class Consultas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class HomePageState extends State<HomePage>{
     return Container(
         child: Center (
             child: GestureDetector(
-                child: Text('pets',
+                child: Text('consultas',
                     textDirection: TextDirection.ltr,
                     style: TextStyle(color: Colors.green, fontSize: 50)
                 ),

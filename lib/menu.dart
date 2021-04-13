@@ -46,21 +46,21 @@ class MeuAppScaffold extends StatelessWidget {
                 leading: Icon(Icons.pets, color: Colors.white),
                 title: Text('Pets',style: TextStyle( color: Colors.white)),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/pets');
                 },
               ),
               ListTile(
                 leading: Icon(Icons.medical_services_outlined, color: Colors.white), //se possível colocar icone de vacina
                 title: Text('Carteira de vacinação',style: TextStyle( color: Colors.white)),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/vacinas');
                 },
               ),
               ListTile(
                 leading: Icon(Icons.calendar_today, color: Colors.white),
                 title: Text('Consultas',style: TextStyle( color: Colors.white)),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/consultas');
                 },
               ),]
         ),
