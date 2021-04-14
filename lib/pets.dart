@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-
+import 'vacinas.dart'; //para testar
 class Pets extends StatelessWidget {
 
   @override
@@ -19,10 +19,12 @@ class PetsPage extends StatefulWidget {
 
 class PetsPageState extends State<PetsPage>{
   final pets = ['1','2','3','4'];
+  bool openDialog = false;
+  String selectedPet;
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: openDialog? Colors.grey : Colors.white,
       body:
       SingleChildScrollView(
         child: Container(
@@ -42,9 +44,63 @@ class PetsPageState extends State<PetsPage>{
                     textDirection: TextDirection.ltr,
                     style: TextStyle(color: Color.fromRGBO(28, 88, 124, 1),
                         fontSize: 28, fontWeight: FontWeight.bold)
-                ),]
+                ),
+
+                ]
 
               ),
+              openDialog?
+              Center(
+                child: AlertDialog(
+                  title: Text('Nome $selectedPet',
+                      style: TextStyle(color: Color.fromRGBO(28, 88, 124, 1),
+                          fontSize: 25, fontWeight: FontWeight.bold)
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Espécie:', style: TextStyle(fontSize: 18)),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Raça:', style: TextStyle(fontSize: 18)),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Sexo:', style: TextStyle(fontSize: 18)),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Idade:', style: TextStyle(fontSize: 18)),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Peso:', style: TextStyle(fontSize: 18)),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('Observações:', style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Fechar',style:
+                      TextStyle(color: Color.fromRGBO(28, 88, 124, 1),
+                          fontSize: 15)),
+                      onPressed: () {
+
+                        setState(() {
+                          openDialog=false;
+                          //selectedPet=null;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              )
+
+                  :
               GridView.count(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
@@ -57,30 +113,46 @@ class PetsPageState extends State<PetsPage>{
                       for(var item in pets )
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
-                          child: Container(
+                          child: GestureDetector(
+                            child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.grey,
                                   shape: BoxShape.circle
                               ),
-                              ),
+
+                            ),
+                              onTap: (){
+                                setState(() {
+                                    openDialog=true;
+                                    selectedPet=item;
+                                });
+
+                              }
+                          ),
+
 
                         ),
+
                     ],
                   ),
 
+              openDialog? Container()
 
+                  :
               Container(
                 height: 60,
                 width: 250,
                 decoration: BoxDecoration(
 
-                    border: Border.all(color: Colors.white),
                     color: Color.fromRGBO(28, 88, 124, 1)),
                 child: FlatButton(
-                  onPressed: () {
-                    /*Navigator.push(
-                        context, MaterialPageRoute(builder: (_) => PetsCadastro()));
-                  */
+
+
+                  disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                  onPressed: openDialog? null : ()   {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => Vacinas()));
+                        //para testar
                   },
                   child: Text(
                     'Cadastrar novo pet',
@@ -95,10 +167,13 @@ class PetsPageState extends State<PetsPage>{
             ],
           ),
         ),
+
         ),
+
 
     );
   }
 }
+
 
 
