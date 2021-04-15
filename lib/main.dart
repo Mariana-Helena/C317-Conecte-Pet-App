@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pets.dart';
 import 'vacinas.dart';
 import 'consultas.dart';
+import 'cadastroUser.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
         '/pets': (context) => Pets(),
         '/consultas': (context) => Consultas(),
         '/vacinas': (context) => Vacinas(),
+        '/usuario/cadastro': (context) => CadastroUser(),
       },
     );
   }
@@ -143,7 +145,8 @@ class _LoginDemoState extends State<LoginDemo> {
                   color: Color.fromRGBO(60, 72, 88, 1)),
               child: FlatButton(
                 onPressed: () {
-
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => CadastroUser()));
                 },
                 child: Text(
                   'Cadastrar', style: TextStyle(color: Colors.white, fontSize: 15),
