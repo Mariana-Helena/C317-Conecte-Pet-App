@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-import 'vacinas.dart'; //para testar
+import 'consultas.dart'; //para testar
 
 class AgendamentoConsulta extends StatelessWidget {
   @override
@@ -194,7 +194,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Vacinas()));
+                          MaterialPageRoute(builder: (_) => Consultas()));
                     },
                     child: Text(
                       'Cadastrar',
@@ -214,7 +214,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Vacinas()));
+                          MaterialPageRoute(builder: (_) => Consultas()));
                       //para testar
                     },
                     child: Text(
