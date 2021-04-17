@@ -194,7 +194,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Consultas()));
+                          MaterialPageRoute(builder: (_) => ConsultaPet()));
                     },
                     child: Text(
                       'Cadastrar',
@@ -214,7 +214,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Consultas()));
+                          MaterialPageRoute(builder: (_) => ConsultaPet()));
                       //para testar
                     },
                     child: Text(

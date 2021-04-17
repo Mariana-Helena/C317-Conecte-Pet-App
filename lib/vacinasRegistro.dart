@@ -243,7 +243,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Vacinas()));
+                          MaterialPageRoute(builder: (_) => VacinasPet()));
                     },
                     child: Text(
                       'Cadastrar',
@@ -263,7 +263,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Vacinas()));
+                          MaterialPageRoute(builder: (_) => VacinasPet()));
                       //para testar
                     },
                     child: Text(
