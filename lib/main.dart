@@ -5,9 +5,8 @@ import 'vacinasRegistro.dart';
 import 'vacinas.dart';
 import 'consultas.dart';
 import 'agendamentoConsulta.dart';
-import 'consultas.dart';
 import 'cadastroUser.dart';
-
+import 'cadastroPet.dart';
 void main() {
   runApp(MyApp());
 }
@@ -24,6 +23,7 @@ class MyApp extends StatelessWidget {
         '/consultas': (context) => AgendamentoConsulta(),
         '/vacinas': (context) => VacinasRegistro(),
         '/usuario/cadastro': (context) => CadastroUser(),
+        '/pets/cadastro': (context) => CadastroPet(),
       },
     );
   }

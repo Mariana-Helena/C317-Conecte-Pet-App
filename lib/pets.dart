@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-import 'vacinas.dart'; //para testar
+import 'cadastroPet.dart'; //para testar
 
 class Pets extends StatelessWidget {
   @override
@@ -136,7 +136,7 @@ class PetsPageState extends State<PetsPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => Vacinas()));
+                                        builder: (_) => CadastroPet()));
                                 //para testar
                               },
                         child: Text(
