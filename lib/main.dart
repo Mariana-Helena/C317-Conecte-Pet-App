@@ -1,6 +1,10 @@
+import 'package:conecte_pet/agendamentoConsulta.dart';
 import 'package:flutter/material.dart';
 import 'pets.dart';
 import 'vacinasRegistro.dart';
+import 'vacinas.dart';
+import 'consultas.dart';
+import 'agendamentoConsulta.dart';
 import 'consultas.dart';
 import 'cadastroUser.dart';
 
@@ -17,7 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginDemo(),
         '/pets': (context) => Pets(),
-        '/consultas': (context) => Consultas(),
+        '/consultas': (context) => AgendamentoConsulta(),
         '/vacinas': (context) => VacinasRegistro(),
         '/usuario/cadastro': (context) => CadastroUser(),
       },
