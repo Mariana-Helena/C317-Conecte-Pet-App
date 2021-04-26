@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.conecte_pet">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="conecte_pet"
         android:icon="@mipmap/ic_launcher">

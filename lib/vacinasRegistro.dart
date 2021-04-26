@@ -1,6 +1,72 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'vacinas.dart'; //para testar
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
+
+Future<Vacina> createVacina(
+    data, pet_id, vacina, fabricante, numero, observacao) async {
+  log('data: $data');
+  log('pet_id: $pet_id');
+  log('vacina: $vacina');
+  log('fabricante: $fabricante');
+  String tipo;
+  if (numero == 1)
+    tipo = 'aplicada';
+  else
+    tipo = 'agendada';
+  log('tipo: $tipo');
+  log('observacao: $observacao');
+  final response = await http.post(
+    Uri.parse('/vacinas'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'data': data,
+      'pet_id': pet_id,
+      'vacina': vacina,
+      'fabricante': fabricante,
+      'tipo': tipo,
+      'observacao': observacao
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    return Vacina.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to register vaccine.');
+  }
+}
+
+class Vacina {
+  final data;
+  final String pet_id;
+  final String vacina;
+  final String fabricante;
+  final String tipo;
+  final String observacao;
+
+  Vacina(
+      {this.data,
+      this.pet_id,
+      this.vacina,
+      this.fabricante,
+      this.tipo,
+      this.observacao});
+
+  factory Vacina.fromJson(Map<String, dynamic> json) {
+    return Vacina(
+      data: json['data'],
+      pet_id: json['pet_id'],
+      vacina: json['vacina'],
+      fabricante: json['fabricante'],
+      tipo: json['tipo'],
+      observacao: json['observacao'],
+    );
+  }
+}
 
 class VacinasRegistro extends StatelessWidget {
   @override
@@ -21,6 +87,24 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
   int option = 1;
   String selectedPet;
   DateTime selectedDate;
+
+  final dataController = TextEditingController();
+  final emailController = TextEditingController();
+  final vacinaController = TextEditingController();
+  final fabricanteController = TextEditingController();
+  final observacaoController = TextEditingController();
+  Future<Vacina> _futureVacina;
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    dataController.dispose();
+    emailController.dispose();
+    vacinaController.dispose();
+    fabricanteController.dispose();
+    observacaoController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,34 +121,37 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      children:[
-                SizedBox(
-                width: 10,
-                ),
+                    Row(children: [
+                      SizedBox(
+                        width: 10,
+                      ),
                       Text('Registrar vacina',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
                               fontWeight: FontWeight.bold)),
-
-            ]),
-
+                    ]),
                     Padding(
                       //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                       padding: const EdgeInsets.only(
-                          left: 25, right: 175, top: 0, bottom: 0),
-                      child: InputDatePickerFormField(
-                        firstDate: new DateTime.utc(1970, 0, 0),
-                        lastDate: new DateTime.utc(2100, 0, 0),
-                        initialDate: new DateTime.now(),
-                        fieldHintText: 'mm/dd/yyyy',
-                        fieldLabelText: 'Data',
-                        onDateSaved: (value) {
-                          setState(() {
-                            selectedDate = value;
-                          });
-                        },
+                          left: 25, right: 175, top: 10, bottom: 0),
+                      child: TextField(
+                        controller: dataController,
+                        style: TextStyle(
+                          height: 0.75,
+                        ),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            fillColor: Color.fromRGBO(255, 255, 255, 0.85),
+                            filled: true,
+                            hintText: 'DD/MM/YYYY',
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                            )),
                       ),
                     ),
                     SizedBox(
@@ -78,6 +165,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
                 child: TextField(
+                  controller: emailController,
                   style: TextStyle(
                     height: 0.75,
                   ),
@@ -139,6 +227,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
                 child: TextField(
+                  controller: vacinaController,
                   style: TextStyle(
                     height: 0.75,
                   ),
@@ -159,6 +248,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
                 child: TextField(
+                  controller: fabricanteController,
                   style: TextStyle(
                     height: 0.75,
                   ),
@@ -209,6 +299,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 0, bottom: 0),
                 child: TextField(
+                  controller: observacaoController,
                   minLines: 1,
                   maxLines: 6,
                   keyboardType: TextInputType.multiline,
@@ -242,8 +333,15 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                   child: FlatButton(
                     disabledColor: Color.fromRGBO(238, 238, 238, 1),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => VacinasPet()));
+                      setState(() {
+                        _futureVacina = createVacina(
+                            dataController.text,
+                            selectedPet,
+                            vacinaController.text,
+                            fabricanteController.text,
+                            option,
+                            observacaoController.text);
+                      });
                     },
                     child: Text(
                       'Cadastrar',
