@@ -7,6 +7,11 @@ import 'consultas.dart';
 import 'agendamentoConsulta.dart';
 import 'cadastroUser.dart';
 import 'cadastroPet.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -29,12 +34,51 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Future<UserLogin> doLogin(email, senha) async {
+  final response = await http.get(
+    Uri.parse('http://localhost:5000/login/${email}/${senha}'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('user', response.body);
+    if (response.body == jsonEncode(<String, List>{'express': []})) {
+      log('Email e/ou senha incorretos!');
+    } else {
+      log('Sucesso!');
+    }
+    return UserLogin.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Erro de rede!');
+  }
+}
+
+class UserLogin {
+  final String email;
+  final String senha;
+  UserLogin({this.email, this.senha});
+
+  factory UserLogin.fromJson(Map<String, dynamic> json) {
+    return UserLogin(
+      email: json['email'],
+      senha: json['senha'],
+    );
+  }
+}
+
 class LoginDemo extends StatefulWidget {
   @override
   _LoginDemoState createState() => _LoginDemoState();
 }
 
 class _LoginDemoState extends State<LoginDemo> {
+  final senhaController = TextEditingController();
+  final emailController = TextEditingController();
+
+  Future<UserLogin> _futureLogin;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +110,7 @@ class _LoginDemoState extends State<LoginDemo> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
                 child: TextField(
+                  controller: emailController,
                   style: TextStyle(
                     height: 0.75,
                   ),
@@ -90,6 +135,7 @@ class _LoginDemoState extends State<LoginDemo> {
                     left: 25, right: 25, top: 10, bottom: 0),
                 //padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextField(
+                  controller: senhaController,
                   style: TextStyle(
                     height: 0.75,
                   ),
@@ -127,8 +173,10 @@ class _LoginDemoState extends State<LoginDemo> {
                     color: Color.fromRGBO(28, 88, 124, 1)),
                 child: FlatButton(
                   onPressed: () {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (_) => Pets()));
+                    setState(() {
+                      _futureLogin =
+                          doLogin(emailController.text, senhaController.text);
+                    });
                   },
                   child: Text(
                     'Entrar',

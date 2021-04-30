@@ -7,19 +7,13 @@ import 'dart:developer';
 
 Future<Vacina> createVacina(
     data, pet_id, vacina, fabricante, numero, observacao) async {
-  log('data: $data');
-  log('pet_id: $pet_id');
-  log('vacina: $vacina');
-  log('fabricante: $fabricante');
   String tipo;
   if (numero == 1)
     tipo = 'aplicada';
   else
     tipo = 'agendada';
-  log('tipo: $tipo');
-  log('observacao: $observacao');
   final response = await http.post(
-    Uri.parse('/vacinas'),
+    Uri.parse('http://localhost:5000/vacinas/registro'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -33,10 +27,10 @@ Future<Vacina> createVacina(
     }),
   );
 
-  if (response.statusCode == 201) {
-    return Vacina.fromJson(jsonDecode(response.body));
+  if (response.statusCode == 200) {
+    log('Sucesso!');
   } else {
-    throw Exception('Failed to register vaccine.');
+    throw Exception('Erro ao registrar a vacina.');
   }
 }
 
@@ -97,11 +91,6 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    dataController.dispose();
-    emailController.dispose();
-    vacinaController.dispose();
-    fabricanteController.dispose();
-    observacaoController.dispose();
     super.dispose();
   }
 
