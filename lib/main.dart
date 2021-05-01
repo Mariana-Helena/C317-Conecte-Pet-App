@@ -34,25 +34,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<UserLogin> doLogin(email, senha) async {
-  final response = await http.get(
-    Uri.parse('http://localhost:5000/login/${email}/${senha}'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('user', response.body);
-    if (response.body == jsonEncode(<String, List>{'express': []})) {
-      log('Email e/ou senha incorretos!');
-    } else {
-      log('Sucesso!');
-    }
-    return UserLogin.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Erro de rede!');
+class SnackBarDemo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'SnackBar Demo',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('SnackBar Demo'),
+        ),
+        body: LoginDemo(),
+      ),
+    );
   }
 }
 
@@ -77,7 +70,8 @@ class LoginDemo extends StatefulWidget {
 class _LoginDemoState extends State<LoginDemo> {
   final senhaController = TextEditingController();
   final emailController = TextEditingController();
-
+  final snackBar = SnackBar(content: Text('Email e/ou senha incorretos!'), backgroundColor: Color.fromRGBO(219, 13, 30, 1));
+  final snackBar2 = SnackBar(content: Text('Erro!'), backgroundColor: Color.fromRGBO(219, 13, 30, 1));
   Future<UserLogin> _futureLogin;
   @override
   Widget build(BuildContext context) {
@@ -213,4 +207,28 @@ class _LoginDemoState extends State<LoginDemo> {
       ),
     );
   }
+    Future<UserLogin> doLogin(email, senha) async {
+      final response = await http.get(
+        Uri.parse('http://localhost:5000/login/${email}/${senha}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', response.body);
+        if (response.body == jsonEncode(<String, List>{'express': []})) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        } else {
+          Navigator.pushNamed(context, '/pets');
+        }
+        return UserLogin.fromJson(jsonDecode(response.body));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+      }
+    }
+
+
 }

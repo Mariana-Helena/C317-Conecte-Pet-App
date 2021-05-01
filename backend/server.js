@@ -8,7 +8,7 @@ const uri = "mongodb+srv://ConectePet:C317ConectePet@clusterc317.bnkbh.mongodb.n
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors({
-  origin: 'http://localhost:57427',
+  origin: '*',
   credentials: true,
 })
 );
