@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:validators/validators.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,12 +73,15 @@ class _LoginDemoState extends State<LoginDemo> {
   final emailController = TextEditingController();
   final snackBar = SnackBar(content: Text('Email e/ou senha incorretos!'), backgroundColor: Color.fromRGBO(219, 13, 30, 1));
   final snackBar2 = SnackBar(content: Text('Erro!'), backgroundColor: Color.fromRGBO(219, 13, 30, 1));
+  final _formKey = GlobalKey<FormState>();
   Future<UserLogin> _futureLogin;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
+      body: Form(
+        key: _formKey,
+        child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("images/Wallpaper.jpg"),
@@ -103,12 +107,25 @@ class _LoginDemoState extends State<LoginDemo> {
                 //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
-                child: TextField(
+                child: TextFormField(
+                  validator: (_){
+                    Pattern pattern =
+                        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
+                    RegExp regex = new RegExp(pattern);
+                    if (emailController.text == null || emailController.text.isEmpty) {
+                      return 'Digite seu email!';
+                    }
+                    else if (!regex.hasMatch(emailController.text))
+                      return 'Email inválido!';
+                    else
+                      return null;
+                  },
                   controller: emailController,
                   style: TextStyle(
                     height: 0.75,
                   ),
                   decoration: InputDecoration(
+                      errorStyle: TextStyle(fontSize: 15, color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
                         borderSide: BorderSide(
@@ -128,13 +145,20 @@ class _LoginDemoState extends State<LoginDemo> {
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 10, bottom: 0),
                 //padding: EdgeInsets.symmetric(horizontal: 15),
-                child: TextField(
+                child: TextFormField(
+                  validator: (_) {
+                    if (senhaController.text == null || senhaController.text.isEmpty) {
+                      return 'Digite sua senha!';
+                    }
+                    return null;
+                  },
                   controller: senhaController,
                   style: TextStyle(
                     height: 0.75,
                   ),
                   obscureText: true,
                   decoration: InputDecoration(
+                      errorStyle: TextStyle(fontSize: 15, color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(0),
                         borderSide: BorderSide(
@@ -167,11 +191,12 @@ class _LoginDemoState extends State<LoginDemo> {
                     color: Color.fromRGBO(28, 88, 124, 1)),
                 child: FlatButton(
                   onPressed: () {
+                  if (_formKey.currentState.validate()) {
                     setState(() {
                       _futureLogin =
                           doLogin(emailController.text, senhaController.text);
                     });
-                  },
+                  }},
                   child: Text(
                     'Entrar',
                     style: TextStyle(color: Colors.white, fontSize: 15),
@@ -204,6 +229,7 @@ class _LoginDemoState extends State<LoginDemo> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
