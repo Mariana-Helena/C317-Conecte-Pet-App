@@ -188,6 +188,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     padding: const EdgeInsets.only(
                         left: 25, right: 25, top: 10, bottom: 0),
                     child: TextFormField(
+                      readOnly: pets.length!=0? true : false,
                       validator: (_) {
                         Pattern pattern =
                             r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
@@ -220,10 +221,11 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                 ),
                 Row(children: [
                   SizedBox(
-                    width: 50,
+                    width: 25,
                   ),
                   Container(
-                    height: 45,
+                    height: 40,
+                    width: 150,
                     decoration:
                         BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
                     child: FlatButton(
@@ -249,21 +251,18 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                     width: 10,
                   ),
                   Container(
-                    height: 45,
+                    height: 40,
+                    width: 150,
                     decoration:
                         BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
                     child: FlatButton(
                       disabledColor: Color.fromRGBO(238, 238, 238, 1),
                       onPressed: () {
-                        if (_formKey.currentState.validate()) {
                           setState(() {
-                            _futureConsulta = createConsulta(
-                                dataController.text,
-                                selectedPet,
-                                horarioController.text,
-                                observacaoController.text);
+                            selectedPet = null;
+                            emailController.text = '';
+                            pets = [];
                           });
-                        }
                       },
                       child: Icon(
                         Icons.clear,
@@ -382,7 +381,7 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                 ),
                 Row(children: [
                   SizedBox(
-                    width: 50,
+                    width: 25,
                   ),
                   Container(
                     height: 60,
@@ -441,7 +440,9 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
     );
   }
 
-  Future<Consulta> createConsulta(data, pet, horario, observacao) async {
+  Future<Consulta> createConsulta(data, pet_id, horario, observacao) async {
+    var pet = pets.firstWhere((pet) => pet['_id'] == pet_id);
+    var petJson = {'id': pet['_id'], 'nome': pet['nome'], 'dono': pet['usuario']};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var user = prefs.get('user');
     var expressUser = jsonDecode(user)['express'];
@@ -451,9 +452,9 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         'data': data,
-        'pet': pet,
+        'pet': petJson,
         'horario': horario,
         'observacao': observacao,
         'crmv': crmv

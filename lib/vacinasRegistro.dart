@@ -162,6 +162,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                   padding: const EdgeInsets.only(
                       left: 25, right: 25, top: 10, bottom: 0),
                   child: TextFormField(
+                    readOnly: pets.length!=0? true : false,
                     validator: (_) {
                       Pattern pattern =
                           r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
