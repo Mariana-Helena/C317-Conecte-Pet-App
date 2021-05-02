@@ -304,10 +304,10 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
                             selectedPet = newValue;
                           });
                         },
-                        items: pets.map<DropdownMenuItem<String>>((value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                        items: pets.map((item) {
+                          return new DropdownMenuItem(
+                            child: new Text(item['nome']),
+                            value: item['_id'].toString(),
                           );
                         }).toList(),
                       ),
@@ -477,7 +477,10 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
     );
     log(response.body);
     var express = jsonDecode(response.body)['express'];
-    pets = express;
+
+    setState(() {
+      pets = express;
+    });
     if (response.statusCode == 200) {
       if (response.body == jsonEncode(<String, List>{'express': []})) {
         ScaffoldMessenger.of(context).showSnackBar(snackBar4);

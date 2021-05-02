@@ -224,7 +224,9 @@ class PetsPageState extends State<PetsPage> {
     );
     log(response.body);
     var express = jsonDecode(response.body)['express'];
-    pets = express;
+    setState(() {
+      pets = express;
+    });
 
     if (response.statusCode == 200) {
       if (response.body == jsonEncode(<String, List>{'express': []})) {
