@@ -240,6 +240,7 @@ class _LoginDemoState extends State<LoginDemo> {
       ),
     );
   }
+
   Future<UserLogin> doLogin(email, senha) async {
     final response = await http.get(
       Uri.parse('http://localhost:5000/login/${email}/${senha}'),

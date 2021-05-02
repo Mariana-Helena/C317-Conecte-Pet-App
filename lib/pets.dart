@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-import 'cadastroPet.dart'; //para testar
+import 'cadastroPet.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
