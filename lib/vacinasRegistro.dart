@@ -1,10 +1,41 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-import 'vacinas.dart'; //para testar
+import 'vacinas.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:developer';
+
+class UserPets {
+  final String id;
+  final String nome;
+  final String especie;
+  final String raca;
+  final double idade;
+  final double peso;
+  final String sexo;
+  final String observacao;
+  UserPets(
+      {this.id,
+        this.nome,
+        this.especie,
+        this.raca,
+        this.idade,
+        this.peso,
+        this.sexo,
+        this.observacao});
+
+  factory UserPets.fromJson(Map<String, dynamic> json) {
+    return UserPets(
+        id: json['_id'],
+        nome: json['nome'],
+        especie: json['especie'],
+        raca: json['raca'],
+        idade: json['idade'],
+        peso: json['peso'],
+        sexo: json['sexo'],
+        observacao: json['observacao']);
+  }
+}
 
 class SnackBarDemo extends StatelessWidget {
   @override
@@ -70,8 +101,13 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
   final snackBar2 = SnackBar(
       content: Text('Erro no registro!'),
       backgroundColor: Color.fromRGBO(219, 13, 30, 1));
+  final snackBar3 = SnackBar(
+      content: Text('Pet encontrado!'),
+      backgroundColor: Color.fromRGBO(10, 140, 30, 1));
+  final snackBar4 = SnackBar(
+      content: Text('Erro!'), backgroundColor: Color.fromRGBO(219, 13, 30, 1));
 
-  final pets = ['1', '2', '3', '4'];
+  var pets = [];
   int option = 1;
   String selectedPet;
   DateTime selectedDate;
@@ -82,6 +118,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
   final fabricanteController = TextEditingController();
   final observacaoController = TextEditingController();
   Future<Vacina> _futureVacina;
+  Future<UserPets> _futurePets;
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
@@ -195,6 +232,62 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                   height: 10,
                 ),
                 Row(children: [
+                  SizedBox(
+                    width: 25,
+                  ),
+                  Container(
+                    height: 40,
+                    width: 150,
+                    decoration:
+                    BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                    child: FlatButton(
+                      disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                      onPressed: () {
+                        Pattern pattern =
+                            r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
+                        RegExp regex = new RegExp(pattern);
+                        if (regex.hasMatch(emailController.text)) {
+                          setState(() {
+                            _futurePets = getPets(emailController.text);
+                          });
+                        }
+                      },
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.blue,
+                        size: 36.0,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    height: 40,
+                    width: 150,
+                    decoration:
+                    BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                    child: FlatButton(
+                      disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                      onPressed: () {
+                        setState(() {
+                          selectedPet = null;
+                          emailController.text = '';
+                          pets = [];
+                        });
+                      },
+                      child: Icon(
+                        Icons.clear,
+                        color: Colors.blue,
+                        size: 36.0,
+                      ),
+                    ),
+                  ),
+                ]),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(children: [
                   SizedBox(width: 25),
                   SizedBox(
                     width: 310,
@@ -222,11 +315,10 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                             selectedPet = newValue;
                           });
                         },
-                        items: <String>['One', 'Two', 'Three', 'Four']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
+                        items: pets.map((item) {
+                          return new DropdownMenuItem(
+                            child: new Text(item['nome']),
+                            value: item['_id'].toString(),
                           );
                         }).toList(),
                       ),
@@ -348,7 +440,7 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
                 ),
                 Row(children: [
                   SizedBox(
-                    width: 50,
+                    width: 25,
                   ),
                   Container(
                     height: 60,
@@ -410,7 +502,9 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
   }
 
   Future<Vacina> createVacina(
-      data, pet, vacina, fabricante, numero, observacao) async {
+      data, pet_id, vacina, fabricante, numero, observacao) async {
+    var pet = pets.firstWhere((pet) => pet['_id'] == pet_id);
+    var petJson = {'id': pet['_id'], 'nome': pet['nome'], 'dono': pet['usuario']};
     String tipo;
     if (numero == 1)
       tipo = 'aplicada';
@@ -425,9 +519,9 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode({
         'data': data,
-        'pet': pet,
+        'pet': petJson,
         'vacina': vacina,
         'fabricante': fabricante,
         'tipo': tipo,
@@ -440,6 +534,30 @@ class VacinasRegistroPageState extends State<VacinasRegistroPage> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+    }
+  }
+  Future<UserPets> getPets(email) async {
+    final response = await http.get(
+      Uri.parse('http://localhost:5000/pets/${email}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    var express = jsonDecode(response.body)['express'];
+
+    setState(() {
+      pets = express;
+    });
+    if (response.statusCode == 200) {
+      if (response.body == jsonEncode(<String, List>{'express': []})) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar4);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar3);
+      }
+      return UserPets.fromJson(jsonDecode(response.body));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar4);
+      return null;
     }
   }
 }

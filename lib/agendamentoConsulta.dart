@@ -4,7 +4,6 @@ import 'consultas.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:developer';
 
 class UserPets {
   final String id;
@@ -469,14 +468,12 @@ class AgendamentoConsultaPageState extends State<AgendamentoConsultaPage> {
   }
 
   Future<UserPets> getPets(email) async {
-    log(email);
     final response = await http.get(
       Uri.parse('http://localhost:5000/pets/${email}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-    log(response.body);
     var express = jsonDecode(response.body)['express'];
 
     setState(() {
