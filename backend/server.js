@@ -48,8 +48,20 @@ app.get('/vacinas/registro/:email', (req, res) => {
   
 });
 
+app.post('/pet/cadastro', (req, res) => {
+  const collection = client.db("ConectePet").collection("Pet");
+  collection.insertOne(req.body);
+  res.end();
+});
+
 app.post('/vacinas/registro', (req, res) => {
   const collection = client.db("ConectePet").collection("Vacinas");    
+  collection.insertOne(req.body);
+  res.end();
+});
+
+app.post('/usuario/cadastro', (req, res) => {
+  const collection = client.db("ConectePet").collection("Usuario");
   collection.insertOne(req.body);
   res.end();
 });

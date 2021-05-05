@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
-import 'cadastroPet.dart'; //para testar
+import 'vacinasRegistro.dart';
 
 class VacinasPet extends StatelessWidget {
   @override
@@ -20,6 +20,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
   final pets = ['Pet1', 'Pet2', 'Pet3', 'Pet4'];
   bool openDialog = false;
   String selectedPet;
+  var ehvet = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,6 +224,26 @@ class VacinasPetPageState extends State<VacinasPetPage> {
 
               SizedBox(
                 height: 10,
+              ),
+              Container(
+                height: 60,
+                width: 100,
+                decoration:
+                BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                child: FlatButton(
+                  disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => VacinasRegistro()));
+                  },
+                  child: Text(
+                    'Registrar Vacina',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10,
               ),
             ],
           ),
