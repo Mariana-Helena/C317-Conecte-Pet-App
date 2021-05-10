@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'menu.dart';
 import 'vacinasRegistro.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VacinasPet extends StatelessWidget {
   @override
@@ -9,7 +14,60 @@ class VacinasPet extends StatelessWidget {
   }
 }
 
+class UserPets {
+  final String id;
+  final String nome;
+  final String especie;
+  final String raca;
+  final double idade;
+  final double peso;
+  final String sexo;
+  final String observacao;
+  UserPets({this.id, this.nome, this.especie, this.raca, this.idade, this.peso, this.sexo, this.observacao});
+
+  factory UserPets.fromJson(Map<String, dynamic> json) {
+    return UserPets(
+        id: json['_id'],
+        nome: json['nome'],
+        especie: json['especie'],
+        raca: json['raca'],
+        idade: json['idade'],
+        peso: json['peso'],
+        sexo: json['sexo'],
+        observacao: json['observacao']
+    );
+  }
+}
+
+class VacinasPets {
+  final String id;
+  final String nomePet;
+  final String emailDono;
+  final String fabricante;
+  final double vacina;
+  final double data;
+  final String tipo;
+  final String observacao;
+  final String crmv;
+  VacinasPets({this.id,this.nomePet, this.emailDono, this.fabricante, this.vacina, this.data, this.tipo, this.observacao, this.crmv});
+
+  factory VacinasPets.fromJson(Map<String, dynamic> json) {
+    return VacinasPets(
+        id: json['_id'],
+        nomePet: json['pet']['nome'],
+        emailDono: json['pet']['dono'],
+        fabricante: json['fabricante'],
+        vacina: json['vacina'],
+        data: json['data'],
+        tipo: json['tipo'],
+        observacao: json['observacao'],
+        crmv: json['crmv']
+    );
+  }
+}
+
 class VacinasPetPage extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return VacinasPetPageState();
@@ -17,10 +75,30 @@ class VacinasPetPage extends StatefulWidget {
 }
 
 class VacinasPetPageState extends State<VacinasPetPage> {
-  final pets = ['Pet1', 'Pet2', 'Pet3', 'Pet4'];
+
+  var pets = [];
+  var vacinas = [];
   bool openDialog = false;
-  String selectedPet;
-  var ehvet = false;
+  String selectedPetId;
+  String selectedPetNome;
+  String selectedDonoEmail;
+  var selectedFabricante = new List();
+  var selectedVacina = new List();
+  var selectedData = new List();
+  var selectedTipo = new List();
+  var selectedCRMV = new List();
+  var selectedPetObs = new List();
+
+  String selectedPetIdPet;
+
+  Future<UserPets> _futureLogin;
+  Future<VacinasPets> _futureLogin2;
+
+  @override
+  void initState() {
+    _futureLogin = getPets();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +114,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                 SizedBox(
                   width: 10,
                 ),
-                Text('Vacinação dos Pets',
+                Text('Vacinas dos Pets',
                     textDirection: TextDirection.ltr,
                     style: TextStyle(
                         color: Color.fromRGBO(28, 88, 124, 1),
@@ -46,7 +124,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
               openDialog
                   ? Center(
                 child: AlertDialog(
-                  title: Text('Nome $selectedPet',
+                  title: Text('$selectedPetNome',
                       style: TextStyle(
                           color: Color.fromRGBO(28, 88, 124, 1),
                           fontSize: 25,
@@ -54,126 +132,84 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                   content: SingleChildScrollView(
                     child: ListBody(
                       children: <Widget>[
-                        Text('Vacina:', style: TextStyle(fontSize: 18)),
+                        Container(
+                          height: 20,
+                          child: Text('Fabricante: ${selectedFabricante}', style: TextStyle(fontSize: 18)),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
-                        Text('Fabricante:', style: TextStyle(fontSize: 18)),
+                        Container(
+                          height: 20,
+                          child: Text('Vacina: ${selectedVacina}', style: TextStyle(fontSize: 18)),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
-                        Text('Aplicação:', style: TextStyle(fontSize: 18)),
+                        Container(
+                          height: 20,
+                          child: Text('Data: $selectedData', style: TextStyle(fontSize: 18)),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
-                        Text('Próx. Aplicação:', style: TextStyle(fontSize: 18)),
+                        Container(
+                          height: 20,
+                          child: Text('Aplicada/Agendada: $selectedTipo', style: TextStyle(fontSize: 18)),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
-                        Text('Veterinário:', style: TextStyle(fontSize: 18)),
+                        Container(
+                          height: 20,
+                          child: Text('Veterinário: $selectedCRMV ', style: TextStyle(fontSize: 18)),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
-                        Text('Observações:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
+                        Container(
+                          height: 20,
+                          child: Text('Observação: $selectedPetObs',
+                              style: TextStyle(fontSize: 18)),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            FloatingActionButton(
-                                mini: true,
-                                backgroundColor: Color.fromRGBO(28, 88, 124, 1),
-                                child: Icon(Icons.delete),
-                                onPressed: () {
-                                  Widget cancelaButton = FlatButton(
-                                    child: Text("Cancelar"),
-                                    onPressed:  () {},
-                                  );
-                                  Widget continuaButton = FlatButton(
-                                    child: Text("Continar"),
-                                    onPressed:  () {},
-                                  );
-                                  //configura o AlertDialog
-                                  AlertDialog alert = AlertDialog(
-                                    title: Text("Excluir vacina"),
-                                    content: Text("Deseja mesmo excluir essa vacina ?"),
-                                    actions: [
-                                      cancelaButton,
-                                      continuaButton,
-                                    ],
-                                  );
-                                  //exibe o diálogo
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                                }
-                            ),
-                          ],
-                        ),
-                        Text('Vacina2:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Fabricante:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Aplicação:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Próx. Aplicação:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Veterinário:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Observações:', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            FloatingActionButton(
-                                mini: true,
-                                backgroundColor: Color.fromRGBO(28, 88, 124, 1),
-                                child: Icon(Icons.delete),
-                                onPressed: () {
-                                  Widget cancelaButton = FlatButton(
-                                    child: Text("Cancelar"),
-                                    onPressed:  () {},
-                                  );
-                                  Widget continuaButton = FlatButton(
-                                    child: Text("Continar"),
-                                    onPressed:  () {},
-                                  );
-                                  //configura o AlertDialog
-                                  AlertDialog alert = AlertDialog(
-                                    title: Text("Excluir vacina"),
-                                    content: Text("Deseja mesmo excluir essa vacina ?"),
-                                    actions: [
-                                      cancelaButton,
-                                      continuaButton,
-                                    ],
-                                  );
-                                  //exibe o diálogo
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                                }
-                            ),
-
-                          ],
+                        Container(
+                          height: 40,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              FloatingActionButton(
+                                  mini: true,
+                                  backgroundColor: Color.fromRGBO(28, 88, 124, 1),
+                                  child: Icon(Icons.delete),
+                                  onPressed: () {
+                                    Widget cancelaButton = FlatButton(
+                                      child: Text("Cancelar"),
+                                      onPressed:  () {},
+                                    );
+                                    Widget continuaButton = FlatButton(
+                                      child: Text("Continuar"),
+                                      onPressed:  () {},
+                                    );
+                                    //configura o AlertDialog
+                                    AlertDialog alert = AlertDialog(
+                                      title: Text("Excluir vacina"),
+                                      content: Text("Deseja mesmo excluir essa vacina ?"),
+                                      actions: [
+                                        cancelaButton,
+                                        continuaButton,
+                                      ],
+                                    );
+                                    //exibe o diálogo
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
+                                      },
+                                    );
+                                  }
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -187,7 +223,12 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                       onPressed: () {
                         setState(() {
                           openDialog = false;
-                          //selectedPet=null;
+                          selectedFabricante.clear();
+                          selectedData.clear();
+                          selectedVacina.clear();
+                          selectedTipo.clear();
+                          selectedCRMV.clear();
+                          selectedPetObs.clear();
                         });
                       },
                     ),
@@ -214,36 +255,47 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                           ),
                           onTap: () {
                             setState(() {
-                              openDialog = true;
-                              selectedPet = item;
+                              if (pets.length != 0)
+                              {
+                                if (item['nome'] != null){
+                                  getVacinas(item['_id']);
+
+                                    }
+                                }
+                                openDialog = true;
+                                // Navigator.push(context,
+                                //     MaterialPageRoute(builder: (_) => ViewVacinasPage()));
+
                             });
                           }),
                     ),
                 ],
               ),
-
-              SizedBox(
-                height: 10,
-              ),
-              Container(
+              openDialog
+                  ? Container()
+                  : Container(
                 height: 60,
-                width: 100,
+                width: 250,
                 decoration:
                 BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
                 child: FlatButton(
                   disabledColor: Color.fromRGBO(238, 238, 238, 1),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => VacinasRegistro()));
+                  onPressed: openDialog
+                      ? null
+                      : () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => VacinasRegistro()));
                   },
                   child: Text(
-                    'Registrar Vacina',
+                    'Registrar vacina',
                     style: TextStyle(color: Colors.white, fontSize: 15),
                   ),
                 ),
               ),
               SizedBox(
-                width: 10,
+                height: 10,
               ),
             ],
           ),
@@ -251,4 +303,74 @@ class VacinasPetPageState extends State<VacinasPetPage> {
       ),
     );
   }
+  Future<UserPets> getPets() async {
+    log('loading...');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var user = prefs.get('user');
+    var expressUser = jsonDecode(user)['express'];
+    var email = expressUser[0]['email'];
+    final response = await http.get(
+      Uri.parse('http://localhost:5000/pets/${email}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    log(response.body);
+    var express = jsonDecode(response.body)['express'];
+    setState(() {
+      pets = express;
+    });
+
+    if (response.statusCode == 200) {
+      if (response.body == jsonEncode(<String, List>{'express': []})) {
+        //encontrado
+
+      } else {
+        //não encontrado
+      }
+      return UserPets.fromJson(jsonDecode(response.body));
+    } else {
+      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+Future<VacinasPets> getVacinas(idPet) async {
+  log('loading...');
+  final response = await http.get(
+    Uri.parse('http://localhost:5000/vacinas/${idPet}'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+  log(response.body);
+  var express = jsonDecode(response.body)['express'];
+  setState(() {
+    vacinas = express;
+    for (var item2 in vacinas)
+      if (vacinas.length != 0) {
+        selectedPetId = item2['_id'];
+        selectedPetNome = item2['pet']['nome'];
+        selectedDonoEmail = item2['pet']['dono'];
+        selectedFabricante.add(item2['fabricante']);
+        selectedVacina.add(item2['vacina']);
+        selectedData.add(item2['data']);
+        selectedTipo.add(item2['tipo']);
+        selectedCRMV.add(item2['crmv']);
+        selectedPetObs.add(item2['observacao']);
+      }
+  });
+
+  if (response.statusCode == 200) {
+    if (response.body == jsonEncode(<String, List>{'express': []})) {
+      //encontrado
+
+    } else {
+      //não encontrado
+    }
+    return VacinasPets.fromJson(jsonDecode(response.body));
+  } else {
+    //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }
+}
+

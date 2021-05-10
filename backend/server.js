@@ -12,8 +12,8 @@ app.use(cors({
   credentials: true,
 })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 app.get('/pets/:email', (req, res) => {
   var response;
@@ -25,6 +25,18 @@ app.get('/pets/:email', (req, res) => {
   });   
   
 });
+
+app.get('/vacinas/:id_pet', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Vacinas");
+  collection.find({'pet.id': req.params.id_pet}).toArray(function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+
+});
+
 
 app.get('/login/:email/:senha', (req, res) => {
   var response;

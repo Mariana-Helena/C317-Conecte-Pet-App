@@ -1,13 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'menu.dart';
 import 'dart:convert';
 import 'pets.dart'; //para testar
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
+// import 'dart:io';
+import 'dart:html';
 class Pet {
+  final String foto;
   final String nome;
   final String especie;
   final String raca;
@@ -17,7 +21,9 @@ class Pet {
   final String usuario;
 
   Pet(
-      {this.nome,
+      {
+        this.foto,
+        this.nome,
         this.especie,
         this.raca,
         this.idade,
@@ -27,6 +33,7 @@ class Pet {
 
   factory Pet.fromJson(Map<String, dynamic> json) {
     return Pet(
+        foto: json['foto'],
         nome: json['nome'],
         especie: json['especie'],
         raca: json['raca'],
@@ -75,15 +82,17 @@ class CadastroPetPageState extends State<CadastroPetPage> {
   Future<Pet> _futurePet;
   final _formKey = GlobalKey<FormState>();
 
-  File _image;
+  String _strImage;
+  var _image;
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        _strImage = base64Encode(pickedFile);
+        _image = base64Decode(_strImage);
       } else {
         print('No image selected.');
       }
@@ -130,8 +139,8 @@ class CadastroPetPageState extends State<CadastroPetPage> {
                           child: _image == null
                               ? Image.asset("images/iconePerfil.png", height: 50.0,
                               width: 50.0,fit: BoxFit.cover):
-                            Image.file(_image, height: 20.0,
-                              width: 20.0,fit: BoxFit.cover),
+                            Image.memory(_image, height: 50.0,
+                              width: 50.0,fit: BoxFit.cover),
                         ),
                         Container(
                           height: 60,
@@ -374,6 +383,7 @@ class CadastroPetPageState extends State<CadastroPetPage> {
                         if (_formKey.currentState.validate()) {
                           setState(() {
                             _futurePet = createPet(
+                                _strImage,
                                 nomeController.text,
                                 selectedPet,
                                 racaController.text,
@@ -423,7 +433,7 @@ class CadastroPetPageState extends State<CadastroPetPage> {
     );
   }
   Future<Pet> createPet(
-      nome, especie, raca, sexo,idade, peso,observacao) async {
+      img,nome, especie, raca, sexo,idade, peso,observacao) async {
     String tipo;
     if (sexo == 1)
       tipo = 'macho';
@@ -439,6 +449,7 @@ class CadastroPetPageState extends State<CadastroPetPage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
+        'foto': img,
         'nome': nome,
         'especie': especie,
         'raca': raca,
@@ -453,6 +464,7 @@ class CadastroPetPageState extends State<CadastroPetPage> {
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
+      log(response.toString());
       ScaffoldMessenger.of(context).showSnackBar(snackBar2);
     }
   }
