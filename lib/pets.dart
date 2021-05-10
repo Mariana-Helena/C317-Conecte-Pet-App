@@ -22,25 +22,30 @@ class UserPets {
   final double peso;
   final String sexo;
   final String observacao;
-  UserPets({this.id, this.nome, this.especie, this.raca, this.idade, this.peso, this.sexo, this.observacao});
+  UserPets(
+      {this.id,
+      this.nome,
+      this.especie,
+      this.raca,
+      this.idade,
+      this.peso,
+      this.sexo,
+      this.observacao});
 
   factory UserPets.fromJson(Map<String, dynamic> json) {
     return UserPets(
-      id: json['_id'],
-      nome: json['nome'],
-      especie: json['especie'],
-      raca: json['raca'],
-      idade: json['idade'],
-      peso: json['peso'],
-      sexo: json['sexo'],
-      observacao: json['observacao']
-
-    );
+        id: json['_id'],
+        nome: json['nome'],
+        especie: json['especie'],
+        raca: json['raca'],
+        idade: json['idade'],
+        peso: json['peso'],
+        sexo: json['sexo'],
+        observacao: json['observacao']);
   }
 }
 
 class PetsPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return PetsPageState();
@@ -48,7 +53,6 @@ class PetsPage extends StatefulWidget {
 }
 
 class PetsPageState extends State<PetsPage> {
-
   var pets = [];
   bool openDialog = false;
   String selectedPetId;
@@ -90,117 +94,119 @@ class PetsPageState extends State<PetsPage> {
               ]),
               openDialog
                   ? Center(
-                child: AlertDialog(
-                  title: Text('$selectedPetNome',
-                      style: TextStyle(
-                          color: Color.fromRGBO(28, 88, 124, 1),
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold)),
-                  content: SingleChildScrollView(
-                    child: ListBody(
+                      child: AlertDialog(
+                        title: Text('$selectedPetNome',
+                            style: TextStyle(
+                                color: Color.fromRGBO(28, 88, 124, 1),
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold)),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text('Espécie: $selectedPetEspecie',
+                                  style: TextStyle(fontSize: 18)),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Raça: $selectedPetRaca',
+                                  style: TextStyle(fontSize: 18)),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Sexo: $selectedPetSexo',
+                                  style: TextStyle(fontSize: 18)),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Idade: $selectedPetIdade anos',
+                                  style: TextStyle(fontSize: 18)),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Peso: $selectedPetPeso kg',
+                                  style: TextStyle(fontSize: 18)),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text('Observação: $selectedPetObs',
+                                  style: TextStyle(fontSize: 18)),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('Fechar',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(28, 88, 124, 1),
+                                    fontSize: 15)),
+                            onPressed: () {
+                              setState(() {
+                                openDialog = false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : GridView.count(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 2,
                       children: <Widget>[
-                        Text('Espécie: $selectedPetEspecie', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Raça: $selectedPetRaca', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Sexo: $selectedPetSexo', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Idade: $selectedPetIdade anos', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Peso: $selectedPetPeso kg', style: TextStyle(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Observação: $selectedPetObs',
-                            style: TextStyle(fontSize: 18)),
+                        for (var item in pets)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: GestureDetector(
+                              child: ClipOval(
+                              child: Image.memory(item['foto'], height: 100.0,
+                                  width: 100.0,fit: BoxFit.cover),
+                              ),
+                                onTap: () {
+                                  setState(() {
+                                    openDialog = true;
+                                    if (pets.length != 0) {
+                                      selectedPetId = item['_id'];
+                                      selectedPetNome = item['nome'];
+                                      selectedPetEspecie = item['especie'];
+                                      selectedPetRaca = item['raca'];
+                                      selectedPetSexo = item['sexo'];
+                                      selectedPetIdade = item['idade'];
+                                      selectedPetPeso = item['peso'];
+                                      selectedPetObs = item['observacao'];
+                                    }
+                                  });
+                                }),
+                          ),
                       ],
                     ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text('Fechar',
-                          style: TextStyle(
-                              color: Color.fromRGBO(28, 88, 124, 1),
-                              fontSize: 15)),
-                      onPressed: () {
-                        setState(() {
-                          openDialog = false;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              )
-                  : GridView.count(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                primary: false,
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 2,
-                children: <Widget>[
-                  for (var item in pets)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: GestureDetector(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                shape: BoxShape.circle),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              openDialog = true;
-                              if (pets.length != 0)
-                              {
-                                selectedPetId = item['_id'];
-                                selectedPetNome = item['nome'];
-                                selectedPetEspecie = item['especie'];
-                                selectedPetRaca = item['raca'];
-                                selectedPetSexo = item['sexo'];
-                                selectedPetIdade = item['idade'];
-                                selectedPetPeso = item['peso'];
-                                selectedPetObs = item['observacao'];
-                              }
-
-                            });
-                          }),
-                    ),
-                ],
-              ),
               openDialog
                   ? Container()
                   : Container(
-                height: 60,
-                width: 250,
-                decoration:
-                BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
-                child: FlatButton(
-                  disabledColor: Color.fromRGBO(238, 238, 238, 1),
-                  onPressed: openDialog
-                      ? null
-                      : () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => CadastroPet()));
-                    //para testar
-                  },
-                  child: Text(
-                    'Cadastrar novo pet',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ),
+                      height: 60,
+                      width: 250,
+                      decoration:
+                          BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                      child: FlatButton(
+                        disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                        onPressed: openDialog
+                            ? null
+                            : () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => CadastroPet()));
+                                //para testar
+                              },
+                        child: Text(
+                          'Cadastrar novo pet',
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                      ),
+                    ),
               SizedBox(
                 height: 10,
               ),
@@ -210,6 +216,7 @@ class PetsPageState extends State<PetsPage> {
       ),
     );
   }
+
   Future<UserPets> getPets() async {
     log('loading...');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -226,6 +233,10 @@ class PetsPageState extends State<PetsPage> {
     var express = jsonDecode(response.body)['express'];
     setState(() {
       pets = express;
+      for (var item in pets) {
+        var url = item['foto'];
+        item['foto'] = base64.decode(url.split(',').last);
+      }
     });
 
     if (response.statusCode == 200) {
