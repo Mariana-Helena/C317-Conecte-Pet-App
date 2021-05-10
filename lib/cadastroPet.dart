@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'pets.dart'; //para testar
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Pet {
   final String nome;
@@ -54,11 +56,10 @@ class CadastroPetPage extends StatefulWidget {
 class CadastroPetPageState extends State<CadastroPetPage> {
   final snackBar = SnackBar(
       content: Text('Pet registrado!'),
-      backgroundColor: Color.fromRGBO(10, 140, 30, 1));
+      backgroundColor: Color.fromRGBO(10, 140, 30, 1.0));
   final snackBar2 = SnackBar(
       content: Text('Erro no registro do Pet!'),
-      backgroundColor: Color.fromRGBO(219, 13, 30, 1));
-
+      backgroundColor: Color.fromRGBO(219, 13, 30, 1.0));
   int option = 1;
   String selectedPet;
   DateTime selectedDate;
@@ -73,6 +74,22 @@ class CadastroPetPageState extends State<CadastroPetPage> {
   final usuarioController = TextEditingController();
   Future<Pet> _futurePet;
   final _formKey = GlobalKey<FormState>();
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +121,29 @@ class CadastroPetPageState extends State<CadastroPetPage> {
                                     fontWeight: FontWeight.bold)),
 
                           ]),
-                      Container(
-                        width: 60,
-                        height: 60,
-                        alignment: Alignment.topLeft,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage("images/iconePerfil.png"),
-                            fit: BoxFit.fitHeight,
+                      Row(
+                        children:[
+                          SizedBox(
+                            width: 50,
                           ),
+                          ClipOval(
+                          child: _image == null
+                              ? Image.asset("images/iconePerfil.png", height: 50.0,
+                              width: 50.0,fit: BoxFit.cover):
+                            Image.file(_image, height: 20.0,
+                              width: 20.0,fit: BoxFit.cover),
                         ),
-                      ),
+                        Container(
+                          height: 60,
+                          width: 100,
+                          child: ListTile(
+                            leading: Icon(Icons.add_a_photo, color: Colors.white),
+                            onTap: getImage,
+                          ),
+                          decoration:
+                          BoxDecoration(color: Color.fromRGBO(122, 150, 172, 1)),
+                          ),
+                      ],),
                       SizedBox(
                         height: 10,
                       ),
