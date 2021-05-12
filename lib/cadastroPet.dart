@@ -91,8 +91,8 @@ class CadastroPetPageState extends State<CadastroPetPage> {
 
     setState(() {
       if (pickedFile != null) {
-        _strImage = base64Encode(pickedFile);
-        _image = base64Decode(_strImage);
+        _strImage = "data:image/jpeg;base64," + base64Encode(pickedFile);
+        _image = base64Decode(_strImage.split(',').last);
       } else {
         print('No image selected.');
       }

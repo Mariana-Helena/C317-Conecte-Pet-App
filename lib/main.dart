@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginDemo(),
         '/pets': (context) => Pets(),
-        '/consultas': (context) => ConsultaPet(),
+        '/consultas': (context) => ConsultasPet(),
         '/vacinas': (context) => VacinasPet(),
         '/vacinas/registro': (context) => VacinasRegistro(),
         '/consultas/agendamento': (context) => AgendamentoConsulta(),

@@ -122,97 +122,107 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                         fontWeight: FontWeight.bold)),
               ]),
               openDialog
-                  ? Center(
+                  ? Container(
                 child: AlertDialog(
                   title: Text('$selectedPetNome',
                       style: TextStyle(
                           color: Color.fromRGBO(28, 88, 124, 1),
                           fontSize: 25,
                           fontWeight: FontWeight.bold)),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[
-                        Container(
-                          height: 20,
-                          child: Text('Fabricante: ${selectedFabricante}', style: TextStyle(fontSize: 18)),
+                  content: CustomScrollView(
+                    shrinkWrap: true,
+                    slivers: <Widget>[
+                      SliverPadding(
+                        padding: const EdgeInsets.all(20.0),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate(
+                            <Widget>[
+                              for(var i=0;i<selectedFabricante.length;i++)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                    children:[
+                                  // height: 20,
+                                  Container(
+                                    height: 20,
+                                    child: Text('Fabricante: ${selectedFabricante[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    child: Text('Vacina: ${selectedVacina[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    child: Text('Data: ${selectedData[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    child: Text('Tipo: ${selectedTipo[i]}', style: TextStyle(fontSize: 15), textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    child: Text('Veterinário: ${selectedCRMV[i]} ', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    height: 20,
+                                    child: Text('Observação: ${selectedPetObs[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                  ),
+                                  Container(
+                                    height: 40,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        FloatingActionButton(
+                                            mini: true,
+                                            backgroundColor: Color.fromRGBO(28, 88, 124, 1),
+                                            child: Icon(Icons.delete),
+                                            onPressed: () {
+                                              Widget cancelaButton = FlatButton(
+                                                child: Text("Cancelar"),
+                                                onPressed:  () {},
+                                              );
+                                              Widget continuaButton = FlatButton(
+                                                child: Text("Continuar"),
+                                                onPressed:  () {},
+                                              );
+                                              //configura o AlertDialog
+                                              AlertDialog alert = AlertDialog(
+                                                title: Text("Excluir vacina"),
+                                                content: Text("Deseja mesmo excluir essa vacina ?"),
+                                                actions: [
+                                                  cancelaButton,
+                                                  continuaButton,
+                                                ],
+                                              );
+                                              //exibe o diálogo
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return alert;
+                                                },
+                                              );
+                                            }
+                                        )],
+                                    )),
+                            ]),
+                          ]),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text('Vacina: ${selectedVacina}', style: TextStyle(fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text('Data: $selectedData', style: TextStyle(fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text('Aplicada/Agendada: $selectedTipo', style: TextStyle(fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text('Veterinário: $selectedCRMV ', style: TextStyle(fontSize: 18)),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text('Observação: $selectedPetObs',
-                              style: TextStyle(fontSize: 18)),
-                        ),
-                        Container(
-                          height: 40,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              FloatingActionButton(
-                                  mini: true,
-                                  backgroundColor: Color.fromRGBO(28, 88, 124, 1),
-                                  child: Icon(Icons.delete),
-                                  onPressed: () {
-                                    Widget cancelaButton = FlatButton(
-                                      child: Text("Cancelar"),
-                                      onPressed:  () {},
-                                    );
-                                    Widget continuaButton = FlatButton(
-                                      child: Text("Continuar"),
-                                      onPressed:  () {},
-                                    );
-                                    //configura o AlertDialog
-                                    AlertDialog alert = AlertDialog(
-                                      title: Text("Excluir vacina"),
-                                      content: Text("Deseja mesmo excluir essa vacina ?"),
-                                      actions: [
-                                        cancelaButton,
-                                        continuaButton,
-                                      ],
-                                    );
-                                    //exibe o diálogo
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return alert;
-                                      },
-                                    );
-                                  }
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   actions: <Widget>[
                     TextButton(
@@ -248,10 +258,9 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: GestureDetector(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                shape: BoxShape.circle),
+                          child: ClipOval(
+                            child: Image.memory(item['foto'], height: 100.0,
+                                width: 100.0,fit: BoxFit.cover),
                           ),
                           onTap: () {
                             setState(() {
@@ -259,13 +268,9 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                               {
                                 if (item['nome'] != null){
                                   getVacinas(item['_id']);
-
                                     }
                                 }
                                 openDialog = true;
-                                // Navigator.push(context,
-                                //     MaterialPageRoute(builder: (_) => ViewVacinasPage()));
-
                             });
                           }),
                     ),
@@ -319,6 +324,10 @@ class VacinasPetPageState extends State<VacinasPetPage> {
     var express = jsonDecode(response.body)['express'];
     setState(() {
       pets = express;
+      for (var item in pets) {
+        var url = item['foto'];
+        item['foto'] = base64.decode(url.split(',').last);
+      }
     });
 
     if (response.statusCode == 200) {
@@ -357,6 +366,7 @@ Future<VacinasPets> getVacinas(idPet) async {
         selectedTipo.add(item2['tipo']);
         selectedCRMV.add(item2['crmv']);
         selectedPetObs.add(item2['observacao']);
+        log(selectedPetNome);
       }
   });
 

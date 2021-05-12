@@ -37,6 +37,16 @@ app.get('/vacinas/:id_pet', (req, res) => {
 
 });
 
+app.get('/consultas/:id_pet', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Consultas");
+  collection.find({'pet.id': req.params.id_pet}).toArray(function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+
+});
 
 app.get('/login/:email/:senha', (req, res) => {
   var response;
