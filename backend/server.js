@@ -26,10 +26,32 @@ app.get('/pets/:email', (req, res) => {
   
 });
 
+app.get('/consultas/vet/:crmvr', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Consultas");
+  collection.find({crmv: req.params.crmvr}).toArray(function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+
+});
+
 app.get('/vacinas/:id_pet', (req, res) => {
   var response;
   const collection = client.db("ConectePet").collection("Vacinas");
   collection.find({'pet.id': req.params.id_pet}).toArray(function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+
+});
+
+app.get('/vacinas/vet/:crmvr', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Vacinas");
+  collection.find({crmv: req.params.crmvr}).toArray(function(err, result) {
     if (err) throw err;
     response=result;
     res.send({ express: response });

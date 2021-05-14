@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'vetVacinas.dart';
 import 'menu.dart';
 import 'vacinasRegistro.dart';
 import 'package:http/http.dart' as http;
@@ -78,6 +78,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
 
   var pets = [];
   var vacinas = [];
+  var ehvet = true;
   bool openDialog = false;
   String selectedPetId;
   String selectedPetNome;
@@ -120,9 +121,14 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                         color: Color.fromRGBO(28, 88, 124, 1),
                         fontSize: 28,
                         fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 50,
+                ),
               ]),
               openDialog
-                  ? Container(
+                  ? SizedBox(
+                // width: 100,
+                // height: 100,
                 child: AlertDialog(
                   title: Text('$selectedPetNome',
                       style: TextStyle(
@@ -245,7 +251,63 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                   ],
                 ),
               )
-                  : GridView.count(
+                  :
+              ehvet?
+                Container(
+                child: Column(
+                children: <Widget>[
+                  Container(
+                    height: 60,
+                    width: 250,
+                    decoration:
+                    BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                    child: FlatButton(
+                      disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                      onPressed: openDialog
+                          ? null
+                          : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => VetVacinasPet()));
+                      },
+                      child: Text(
+                        'Visualizar vacinas',
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      ),
+                    ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 60,
+                      width: 250,
+                      decoration:
+                      BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                      child: FlatButton(
+                      disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                      onPressed: openDialog
+                      ? null
+                          : () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                      builder: (_) => VacinasRegistro()));
+                      },
+                      child: Text(
+                      'Registrar vacina',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                      ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                    ]
+                    ))
+                  :
+                GridView.count(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 primary: false,
@@ -276,32 +338,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                     ),
                 ],
               ),
-              openDialog
-                  ? Container()
-                  : Container(
-                height: 60,
-                width: 250,
-                decoration:
-                BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
-                child: FlatButton(
-                  disabledColor: Color.fromRGBO(238, 238, 238, 1),
-                  onPressed: openDialog
-                      ? null
-                      : () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => VacinasRegistro()));
-                  },
-                  child: Text(
-                    'Registrar vacina',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
+
             ],
           ),
         ),
