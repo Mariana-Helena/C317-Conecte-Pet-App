@@ -78,7 +78,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
 
   var pets = [];
   var vacinas = [];
-  var ehvet = true;
+  var ehvet = false;
   bool openDialog = false;
   String selectedPetId;
   String selectedPetNome;
@@ -351,6 +351,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
     var user = prefs.get('user');
     var expressUser = jsonDecode(user)['express'];
     var email = expressUser[0]['email'];
+    var ehveterinario = expressUser[0]['ehveterinario'];
     final response = await http.get(
       Uri.parse('http://localhost:5000/pets/${email}'),
       headers: <String, String>{
@@ -364,6 +365,9 @@ class VacinasPetPageState extends State<VacinasPetPage> {
       for (var item in pets) {
         var url = item['foto'];
         item['foto'] = base64.decode(url.split(',').last);
+      }
+      if (ehveterinario){
+        ehvet = true;
       }
     });
 

@@ -85,21 +85,6 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
         child: Container(
           child: Column(
             children: <Widget>[
-              ListView.separated(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: selectedPetNome.length,
-              separatorBuilder: (BuildContext context, int index) => Divider(),
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text('Nome do Pet: ${selectedPetNome[index]}'+' | ' + 'Dono do Pet: ${selectedDonoEmail[index]}' ),
-                  onTap: () {
-                    getVacinas(selectedPetId[index]);
-                    openDialog = true;
-                  },
-                );
-              },
-            ),
               openDialog
                   ? SizedBox(
                 child: AlertDialog(
@@ -192,40 +177,79 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
                                                         context: context,
                                                         builder: (BuildContext context) {
                                                           return alert;},
-                                                        );
-                                                        }
-                                                        )],
-                                                        )),
-                                                        ]),
-                                                        ]),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text('Fechar',
-                                                      style: TextStyle(
-                                                          color: Color.fromRGBO(28, 88, 124, 1),
-                                                          fontSize: 15)),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      openDialog = false;
-                                                      selectedFabricante.clear();
-                                                      selectedData.clear();
-                                                      selectedVacina.clear();
-                                                      selectedTipo.clear();
-                                                      selectedCRMV.clear();
-                                                      selectedPetObs.clear();
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                             )
-                                              :
-                                              Container()
-          ])
+                                                      );
+                                                    }
+                                                )],
+                                            )),
+                                      ]),
+                              ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Fechar',
+                          style: TextStyle(
+                              color: Color.fromRGBO(28, 88, 124, 1),
+                              fontSize: 15)),
+                      onPressed: () {
+                        setState(() {
+                          openDialog = false;
+                          selectedFabricante.clear();
+                          selectedData.clear();
+                          selectedVacina.clear();
+                          selectedTipo.clear();
+                          selectedCRMV.clear();
+                          selectedPetObs.clear();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              )
+                  :
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children:[
+                    ListView.separated(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: selectedPetNome.length,
+                      separatorBuilder: (BuildContext context, int index) => Divider(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text('Nome do Pet: ${selectedPetNome[index]}'+' | ' + 'Dono do Pet: ${selectedDonoEmail[index]}' ),
+                          onTap: () {
+                            getVacinas(selectedPetId[index]);
+                            openDialog = true;
+                          },
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 60,
+                      width: 200,
+                      decoration:
+                      BoxDecoration(color: Color.fromRGBO(122, 150, 172, 1)),
+                      child: FlatButton(
+                        disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => VacinasPet()));
+                          //para testar
+                        },
+                        child: Text(
+                          'Voltar',
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ])
+            ])
         ))
     );
   }

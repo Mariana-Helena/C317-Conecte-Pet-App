@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'agendamentoConsulta.dart';
+import 'vetConsultas.dart';
 import 'menu.dart';
-import 'vacinasRegistro.dart';
+import 'agendamentoConsulta.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
@@ -75,6 +74,7 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
 
   var pets = [];
   var consultas = [];
+  var ehvet = false;
   bool openDialog = false;
   String selectedPetId;
   String selectedPetNome;
@@ -115,9 +115,14 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                         color: Color.fromRGBO(28, 88, 124, 1),
                         fontSize: 28,
                         fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 50,
+                ),
               ]),
               openDialog
-                  ? Container(
+                  ? SizedBox(
+                // width: 100,
+                // height: 100,
                 child: AlertDialog(
                   title: Text('$selectedPetNome',
                       style: TextStyle(
@@ -136,6 +141,7 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                                   Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children:[
+                                        // height: 20,
                                         Container(
                                           height: 20,
                                           child: Text('Data: ${selectedData[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
@@ -145,14 +151,14 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                                         ),
                                         Container(
                                           height: 20,
-                                          child: Text('Tipo: ${selectedHorario[i]}', style: TextStyle(fontSize: 15), textAlign: TextAlign.left),
+                                          child: Text('Horário: ${selectedHorario[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
                                         ),
                                         SizedBox(
                                           height: 5,
                                         ),
                                         Container(
                                           height: 20,
-                                          child: Text('Veterinário: ${selectedCRMV[i]} ', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
+                                          child: Text('Veterinário: ${selectedCRMV[i]}', style: TextStyle(fontSize: 15), textAlign: TextAlign.left),
                                         ),
                                         SizedBox(
                                           height: 5,
@@ -181,7 +187,7 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                                                       );
                                                       //configura o AlertDialog
                                                       AlertDialog alert = AlertDialog(
-                                                        title: Text("Excluir vacina"),
+                                                        title: Text("Excluir consulta"),
                                                         content: Text("Deseja mesmo excluir essa consulta ?"),
                                                         actions: [
                                                           cancelaButton,
@@ -223,7 +229,63 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                   ],
                 ),
               )
-                  : GridView.count(
+                  :
+              ehvet?
+              Container(
+                  child: Column(
+                      children: <Widget>[
+                        Container(
+                          height: 60,
+                          width: 250,
+                          decoration:
+                          BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                          child: FlatButton(
+                            disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                            onPressed: openDialog
+                                ? null
+                                : () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => VetConsultasPet()));
+                            },
+                            child: Text(
+                              'Visualizar consultas',
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 60,
+                          width: 250,
+                          decoration:
+                          BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
+                          child: FlatButton(
+                            disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                            onPressed: openDialog
+                                ? null
+                                : () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => AgendamentoConsulta()));
+                            },
+                            child: Text(
+                              'Registrar consulta',
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 60,
+                        ),
+                      ]
+                  ))
+                  :
+              GridView.count(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 primary: false,
@@ -254,32 +316,7 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                     ),
                 ],
               ),
-              openDialog
-                  ? Container()
-                  : Container(
-                height: 60,
-                width: 250,
-                decoration:
-                BoxDecoration(color: Color.fromRGBO(28, 88, 124, 1)),
-                child: FlatButton(
-                  disabledColor: Color.fromRGBO(238, 238, 238, 1),
-                  onPressed: openDialog
-                      ? null
-                      : () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => AgendamentoConsulta()));
-                  },
-                  child: Text(
-                    'Registrar consulta',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
+
             ],
           ),
         ),
@@ -292,6 +329,7 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
     var user = prefs.get('user');
     var expressUser = jsonDecode(user)['express'];
     var email = expressUser[0]['email'];
+    var ehveterinario = expressUser[0]['ehveterinario'];
     final response = await http.get(
       Uri.parse('http://localhost:5000/pets/${email}'),
       headers: <String, String>{
@@ -305,6 +343,9 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
       for (var item in pets) {
         var url = item['foto'];
         item['foto'] = base64.decode(url.split(',').last);
+      }
+      if (ehveterinario){
+        ehvet = true;
       }
     });
 
@@ -342,7 +383,6 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
           selectedHorario.add(item2['horario']);
           selectedCRMV.add(item2['crmv']);
           selectedPetObs.add(item2['observacao']);
-          log(selectedPetNome);
         }
     });
 

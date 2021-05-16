@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'main.dart';
 import 'dart:developer';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+
 
 class Usuario {
   final String nome;
@@ -68,6 +71,24 @@ class CadastroUserPageState extends State<CadastroUserPage> {
   Future<Usuario> _futureUsuario;
   final _formKey = GlobalKey<FormState>();
   var ehvet = false;
+
+  String _strImage;
+  var _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
+
+    setState(() {
+      if (pickedFile != null) {
+        _strImage = "data:image/jpeg;base64," + base64Encode(pickedFile);
+        _image = base64Decode(_strImage.split(',').last);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -97,26 +118,36 @@ class CadastroUserPageState extends State<CadastroUserPage> {
                             SizedBox(
                               width: 10,
                             ),
-                            Text('Cadastrar Usuário',
+                            Text('Cadastro Usuario',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold)),
 
                           ]),
-                      Container(
-                        width: 100, //60
-                        height: 100, //60
-                        alignment: Alignment.topLeft,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage("images/iconePerfil.png"),
-                            fit: BoxFit.fitHeight,
+                      Row(
+                        children:[
+                          SizedBox(
+                            width: 50,
                           ),
-                        ),
-                      ),
-
+                          ClipOval(
+                            child: _image == null
+                                ? Image.asset("images/iconePerfil.png", height: 50.0,
+                                width: 50.0,fit: BoxFit.cover):
+                            Image.memory(_image, height: 50.0,
+                                width: 50.0,fit: BoxFit.cover),
+                          ),
+                          Container(
+                            height: 60,
+                            width: 100,
+                            child: ListTile(
+                              leading: Icon(Icons.add_a_photo, color: Colors.white),
+                              onTap: getImage,
+                            ),
+                            decoration:
+                            BoxDecoration(color: Color.fromRGBO(122, 150, 172, 1)),
+                          ),
+                        ],),
                       SizedBox(
                         height: 10,
                       ),
@@ -320,6 +351,7 @@ class CadastroUserPageState extends State<CadastroUserPage> {
                         if (_formKey.currentState.validate()) {
                           setState(() {
                             _futureUsuario = createUsuario(
+                                _strImage,
                                 nomeController.text,
                                 emailController.text,
                                 senhaController.text,
@@ -368,7 +400,7 @@ class CadastroUserPageState extends State<CadastroUserPage> {
     );
   }
   Future<Usuario> createUsuario(
-    nome, email, senha, telefone,ehveterinario, crmv) async {
+    img,nome, email, senha, telefone,ehveterinario, crmv) async {
     bool tipo;
     if (ehveterinario == 1)
       tipo = false;
@@ -382,6 +414,7 @@ class CadastroUserPageState extends State<CadastroUserPage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
+        'foto': img,
         'nome': nome,
         'email': email,
         'senha': senha,
