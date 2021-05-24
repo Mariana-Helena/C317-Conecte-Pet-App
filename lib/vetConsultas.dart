@@ -55,7 +55,7 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
   var selectedPetNome = new List();
   var selectedDonoEmail = new List();
 
-  String selectedPetId1;
+  var selectedPetId1 = new List();
   String selectedPetNome1;
   String selectedDonoEmail1;
   var selectedData = new List();
@@ -138,11 +138,18 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
                                                             onPressed: () {
                                                               Widget cancelaButton = FlatButton(
                                                                 child: Text("Cancelar"),
-                                                                onPressed:  () {},
+                                                                onPressed:  () {
+                                                                  Navigator.push(context,
+                                                                      MaterialPageRoute(builder: (_) => VetConsultasPet()));
+                                                                },
                                                               );
                                                               Widget continuaButton = FlatButton(
                                                                 child: Text("Continuar"),
-                                                                onPressed:  () {},
+                                                                onPressed:  () {
+                                                                  excluirConsulta(selectedPetId1[i]);
+                                                                  Navigator.push(context,
+                                                                      MaterialPageRoute(builder: (_) => VetConsultasPet()));
+                                                                },
                                                               );
                                                               //configura o AlertDialog
                                                               AlertDialog alert = AlertDialog(
@@ -287,7 +294,7 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
       consultas = express;
       for (var item2 in consultas)
         if (consultas.length != 0) {
-          selectedPetId1 = item2['_id'];
+          selectedPetId1.add(item2['_id']);
           selectedPetNome1 = item2['pet']['nome'];
           selectedDonoEmail1 = item2['pet']['dono'];
           selectedData.add(item2['data']);
@@ -297,6 +304,28 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
         }
     });
 
+    if (response.statusCode == 200) {
+      if (response.body == jsonEncode(<String, List>{'express': []})) {
+        //encontrado
+
+      } else {
+        //não encontrado
+      }
+      return ConsultasPets.fromJson(jsonDecode(response.body));
+    } else {
+      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<ConsultasPets> excluirConsulta(idConsulta) async {
+    log('loading...');
+    log('Vacinaaa ${idConsulta}');
+    final response = await http.delete(
+      Uri.parse('http://localhost:5000/veterinario/consultas/${idConsulta}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
     if (response.statusCode == 200) {
       if (response.body == jsonEncode(<String, List>{'express': []})) {
         //encontrado

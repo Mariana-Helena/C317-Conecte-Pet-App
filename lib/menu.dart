@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'pets.dart';
 
@@ -56,6 +58,14 @@ class MeuAppScaffold extends StatelessWidget {
             title: Text('Consultas', style: TextStyle(color: Colors.white)),
             onTap: () {
               Navigator.pushNamed(context, '/consultas');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.exit_to_app, color: Colors.white),
+            title: Text('Sair',style: TextStyle(color: Colors.white)),
+            onTap: () {
+              window.localStorage.clear();
+              Navigator.pushNamed(context, '/');  
             },
           ),
         ]),

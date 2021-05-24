@@ -80,7 +80,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
   var vacinas = [];
   var ehvet = false;
   bool openDialog = false;
-  String selectedPetId;
+  var selectedPetId = new List();
   String selectedPetNome;
   String selectedDonoEmail;
   var selectedFabricante = new List();
@@ -188,42 +188,8 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                                     child: Text('Observação: ${selectedPetObs[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
                                   ),
                                   Container(
-                                    height: 40,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        FloatingActionButton(
-                                            mini: true,
-                                            backgroundColor: Color.fromRGBO(28, 88, 124, 1),
-                                            child: Icon(Icons.delete),
-                                            onPressed: () {
-                                              Widget cancelaButton = FlatButton(
-                                                child: Text("Cancelar"),
-                                                onPressed:  () {},
-                                              );
-                                              Widget continuaButton = FlatButton(
-                                                child: Text("Continuar"),
-                                                onPressed:  () {},
-                                              );
-                                              //configura o AlertDialog
-                                              AlertDialog alert = AlertDialog(
-                                                title: Text("Excluir vacina"),
-                                                content: Text("Deseja mesmo excluir essa vacina ?"),
-                                                actions: [
-                                                  cancelaButton,
-                                                  continuaButton,
-                                                ],
-                                              );
-                                              //exibe o diálogo
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return alert;
-                                                },
-                                              );
-                                            }
-                                        )],
-                                    )),
+                                    height: 10,
+                                  ),
                             ]),
                           ]),
                         ),
@@ -398,7 +364,7 @@ Future<VacinasPets> getVacinas(idPet) async {
     vacinas = express;
     for (var item2 in vacinas)
       if (vacinas.length != 0) {
-        selectedPetId = item2['_id'];
+        selectedPetId.add(item2['_id']);
         selectedPetNome = item2['pet']['nome'];
         selectedDonoEmail = item2['pet']['dono'];
         selectedFabricante.add(item2['fabricante']);
@@ -423,5 +389,6 @@ Future<VacinasPets> getVacinas(idPet) async {
     //ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
+
 }
 

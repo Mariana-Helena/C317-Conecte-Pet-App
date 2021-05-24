@@ -167,43 +167,6 @@ class ConsultasPetPageState extends State<ConsultasPetPage> {
                                           height: 20,
                                           child: Text('Observação: ${selectedPetObs[i]}', style: TextStyle(fontSize: 15),textAlign: TextAlign.left),
                                         ),
-                                        Container(
-                                            height: 40,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                FloatingActionButton(
-                                                    mini: true,
-                                                    backgroundColor: Color.fromRGBO(28, 88, 124, 1),
-                                                    child: Icon(Icons.delete),
-                                                    onPressed: () {
-                                                      Widget cancelaButton = FlatButton(
-                                                        child: Text("Cancelar"),
-                                                        onPressed:  () {},
-                                                      );
-                                                      Widget continuaButton = FlatButton(
-                                                        child: Text("Continuar"),
-                                                        onPressed:  () {},
-                                                      );
-                                                      //configura o AlertDialog
-                                                      AlertDialog alert = AlertDialog(
-                                                        title: Text("Excluir consulta"),
-                                                        content: Text("Deseja mesmo excluir essa consulta ?"),
-                                                        actions: [
-                                                          cancelaButton,
-                                                          continuaButton,
-                                                        ],
-                                                      );
-                                                      //exibe o diálogo
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext context) {
-                                                          return alert;
-                                                        },
-                                                      );
-                                                    }
-                                                )],
-                                            )),
                                       ]),
                               ]),
                         ),

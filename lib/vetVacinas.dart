@@ -58,7 +58,7 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
   var selectedPetNome = new List();
   var selectedDonoEmail = new List();
 
-  String selectedPetId1;
+  var selectedPetId1 = new List();
   String selectedPetNome1;
   String selectedDonoEmail1;
   var selectedFabricante = new List();
@@ -157,11 +157,18 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
                                                     onPressed: () {
                                                       Widget cancelaButton = FlatButton(
                                                         child: Text("Cancelar"),
-                                                        onPressed:  () {},
+                                                        onPressed:  () {
+                                                          Navigator.push(context,
+                                                              MaterialPageRoute(builder: (_) => VetVacinasPet()));
+                                                        },
                                                       );
                                                       Widget continuaButton = FlatButton(
                                                         child: Text("Continuar"),
-                                                        onPressed:  () {},
+                                                        onPressed:  () {
+                                                          excluirVacina(selectedPetId1[i]);
+                                                          Navigator.push(context,
+                                                              MaterialPageRoute(builder: (_) => VetVacinasPet()));
+                                                        },
                                                       );
                                                       //configura o AlertDialog
                                                       AlertDialog alert = AlertDialog(
@@ -308,7 +315,7 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
       vacinas = express;
       for (var item2 in vacinas)
         if (vacinas.length != 0) {
-          selectedPetId1 = item2['_id'];
+          selectedPetId1.add(item2['_id']);
           selectedPetNome1 = item2['pet']['nome'];
           selectedDonoEmail1 = item2['pet']['dono'];
           selectedFabricante.add(item2['fabricante']);
@@ -320,6 +327,28 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
         }
     });
 
+    if (response.statusCode == 200) {
+      if (response.body == jsonEncode(<String, List>{'express': []})) {
+        //encontrado
+
+      } else {
+        //não encontrado
+      }
+      return VacinasPets.fromJson(jsonDecode(response.body));
+    } else {
+      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<VacinasPets> excluirVacina(idVacina) async {
+    log('loading...');
+    log('Vacinaaa ${idVacina}');
+    final response = await http.delete(
+      Uri.parse('http://localhost:5000/veterinario/vacinas/${idVacina}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
     if (response.statusCode == 200) {
       if (response.body == jsonEncode(<String, List>{'express': []})) {
         //encontrado
