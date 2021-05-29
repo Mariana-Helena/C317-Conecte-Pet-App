@@ -160,26 +160,71 @@ class PetsPageState extends State<PetsPage> {
                         for (var item in pets)
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
-                            child: GestureDetector(
-                              child: ClipOval(
-                              child: Image.memory(item['foto'], height: 100.0,
-                                  width: 100.0,fit: BoxFit.cover),
-                              ),
-                                onTap: () {
-                                  setState(() {
-                                    openDialog = true;
-                                    if (pets.length != 0) {
-                                      selectedPetId = item['_id'];
-                                      selectedPetNome = item['nome'];
-                                      selectedPetEspecie = item['especie'];
-                                      selectedPetRaca = item['raca'];
-                                      selectedPetSexo = item['sexo'];
-                                      selectedPetIdade = item['idade'];
-                                      selectedPetPeso = item['peso'];
-                                      selectedPetObs = item['observacao'];
-                                    }
-                                  });
-                                }),
+                            child: Column(
+                                children: <Widget>[
+                                  Container(
+                                      height: 30,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          FloatingActionButton(
+                                              mini: true,
+                                              backgroundColor: Color.fromRGBO(28, 88, 124, 1),
+                                              child: Icon(Icons.delete),
+                                              onPressed: () {
+                                                Widget cancelaButton = FlatButton(
+                                                  child: Text("Cancelar"),
+                                                  onPressed:  () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (_) => Pets()));
+                                                  },
+                                                );
+                                                Widget continuaButton = FlatButton(
+                                                  child: Text("Continuar"),
+                                                  onPressed:  () {
+                                                    excluirPet(item['_id']);
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (_) => Pets()));
+                                                  },
+                                                );
+                                                //configura o AlertDialog
+                                                AlertDialog alert = AlertDialog(
+                                                  title: Text("Excluir pet"),
+                                                  content: Text("Deseja mesmo excluir esse pet ?"),
+                                                  actions: [
+                                                    cancelaButton,
+                                                    continuaButton,
+                                                  ],
+                                                );
+                                                //exibe o diálogo
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return alert;},
+                                                );
+                                              }
+                                          )],
+                                      )),
+                                GestureDetector(
+                                  child: ClipOval(
+                                  child: Image.memory(item['foto'], height: 100.0,
+                                      width: 100.0,fit: BoxFit.cover),
+                                  ),
+                                    onTap: () {
+                                      setState(() {
+                                        openDialog = true;
+                                        if (pets.length != 0) {
+                                          selectedPetId = item['_id'];
+                                          selectedPetNome = item['nome'];
+                                          selectedPetEspecie = item['especie'];
+                                          selectedPetRaca = item['raca'];
+                                          selectedPetSexo = item['sexo'];
+                                          selectedPetIdade = item['idade'];
+                                          selectedPetPeso = item['peso'];
+                                          selectedPetObs = item['observacao'];
+                                        }
+                                      });
+                                })]),
                           ),
                       ],
                     ),
@@ -251,4 +296,27 @@ class PetsPageState extends State<PetsPage> {
       //ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+
+  Future<UserPets> excluirPet(idPet) async {
+    log('loading...');
+    log('Peet ${idPet}');
+    final response = await http.delete(
+      Uri.parse('http://localhost:5000/usuario/pets/${idPet}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (response.statusCode == 200) {
+      if (response.body == jsonEncode(<String, List>{'express': []})) {
+        //encontrado
+
+      } else {
+        //não encontrado
+      }
+      return UserPets.fromJson(jsonDecode(response.body));
+    } else {
+      //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
 }

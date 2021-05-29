@@ -37,6 +37,16 @@ app.delete('/veterinario/vacinas/:id_vacina', (req, res) => {
   });
 });
 
+app.delete('/usuario/pets/:id_pet', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Pet");
+  collection.deleteOne({_id: ObjectId(req.params.id_pet)}, function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+});
+
 app.delete('/veterinario/consultas/:id_consulta', (req, res) => {
   var response;
   const collection = client.db("ConectePet").collection("Consultas");
