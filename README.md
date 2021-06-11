@@ -1,4 +1,4 @@
-# 💻 Conecte Pet - Aplicação Web 
+# 📲 Conecte Pet - Aplicação Mobile
 <p align="center">
 <img src="https://github.com/Mariana-Helena/C317-Conecte-Pet-Web/blob/main/src/images/Logo.png" height="300" width="300" >
 </p>
