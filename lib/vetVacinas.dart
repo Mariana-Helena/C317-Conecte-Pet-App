@@ -268,7 +268,7 @@ class VetVacinasPetPageState extends State<VetVacinasPetPage> {
     var expressUser = jsonDecode(user)['express'];
     var crmv = expressUser[0]['crmv'];
     final response = await http.get(
-      Uri.parse('http://localhost:5000/vacinas/vet/${crmv}'),
+      Uri.parse('http://localhost:5000/veterinario/vacinas/${crmv}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

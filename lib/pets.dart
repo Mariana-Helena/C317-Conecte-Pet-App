@@ -301,7 +301,7 @@ class PetsPageState extends State<PetsPage> {
     log('loading...');
     log('Peet ${idPet}');
     final response = await http.delete(
-      Uri.parse('http://localhost:5000/usuario/pets/${idPet}'),
+      Uri.parse('http://localhost:5000/pets/${idPet}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

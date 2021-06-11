@@ -27,17 +27,7 @@ app.get('/pets/:email', (req, res) => {
   
 });
 
-app.delete('/veterinario/vacinas/:id_vacina', (req, res) => {
-  var response;
-  const collection = client.db("ConectePet").collection("Vacinas");
-  collection.deleteOne({_id: ObjectId(req.params.id_vacina)}, function(err, result) {
-    if (err) throw err;
-    response=result;
-    res.send({ express: response });
-  });
-});
-
-app.delete('/usuario/pets/:id_pet', (req, res) => {
+app.delete('/pets/:id_pet', (req, res) => {
   var response;
   const collection = client.db("ConectePet").collection("Pet");
   collection.deleteOne({_id: ObjectId(req.params.id_pet)}, function(err, result) {
@@ -45,27 +35,6 @@ app.delete('/usuario/pets/:id_pet', (req, res) => {
     response=result;
     res.send({ express: response });
   });
-});
-
-app.delete('/veterinario/consultas/:id_consulta', (req, res) => {
-  var response;
-  const collection = client.db("ConectePet").collection("Consultas");
-  collection.deleteOne({_id: ObjectId(req.params.id_consulta)}, function(err, result) {
-    if (err) throw err;
-    response=result;
-    res.send({ express: response });
-  });
-});
-
-app.get('/consultas/vet/:crmvr', (req, res) => {
-  var response;
-  const collection = client.db("ConectePet").collection("Consultas");
-  collection.find({crmv: req.params.crmvr}).toArray(function(err, result) {
-    if (err) throw err;
-    response=result;
-    res.send({ express: response });
-  });
-
 });
 
 app.get('/vacinas/:id_pet', (req, res) => {
@@ -79,15 +48,46 @@ app.get('/vacinas/:id_pet', (req, res) => {
 
 });
 
-app.get('/vacinas/vet/:crmvr', (req, res) => {
+app.delete('/veterinario/vacinas/:id', (req, res) => {
   var response;
   const collection = client.db("ConectePet").collection("Vacinas");
-  collection.find({crmv: req.params.crmvr}).toArray(function(err, result) {
+  collection.deleteOne({_id: ObjectId(req.params.id)}, function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+});
+
+app.get('/veterinario/vacinas/:vet_crmv', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Vacinas");
+  collection.find({crmv: req.params.vet_crmv}).toArray(function(err, result) {
     if (err) throw err;
     response=result;
     res.send({ express: response });
   });
 
+});
+
+app.get('/veterinario/consultas/:vet_crmv', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Consultas");
+  collection.find({crmv: req.params.vet_crmv}).toArray(function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
+
+});
+
+app.delete('/veterinario/consultas/:id', (req, res) => {
+  var response;
+  const collection = client.db("ConectePet").collection("Consultas");
+  collection.deleteOne({_id: ObjectId(req.params.id)}, function(err, result) {
+    if (err) throw err;
+    response=result;
+    res.send({ express: response });
+  });
 });
 
 app.get('/consultas/:id_pet', (req, res) => {
@@ -123,7 +123,7 @@ app.get('/vacinas/registro/:email', (req, res) => {
   
 });
 
-app.post('/pet/cadastro', (req, res) => {
+app.post('/pets/cadastro', (req, res) => {
   const collection = client.db("ConectePet").collection("Pet");
   collection.insertOne(req.body);
   res.end();

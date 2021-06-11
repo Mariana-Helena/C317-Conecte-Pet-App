@@ -126,7 +126,10 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                 ),
               ]),
               openDialog
-                  ? SizedBox(
+                  ?
+              selectedPetNome != null
+                  ?
+              SizedBox(
                 // width: 100,
                 // height: 100,
                 child: AlertDialog(
@@ -203,18 +206,31 @@ class VacinasPetPageState extends State<VacinasPetPage> {
                               color: Color.fromRGBO(28, 88, 124, 1),
                               fontSize: 15)),
                       onPressed: () {
-                        setState(() {
-                          openDialog = false;
-                          selectedFabricante.clear();
-                          selectedData.clear();
-                          selectedVacina.clear();
-                          selectedTipo.clear();
-                          selectedCRMV.clear();
-                          selectedPetObs.clear();
-                        });
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => VacinasPet()));
                       },
                     ),
                   ],
+                ),
+              )
+                :
+              AlertDialog(
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                  title: Text('Nenhuma vacina encontrada para esse pet!',
+                      style: TextStyle(fontSize: 18)),
+                content: TextButton(
+                  child: Text('Fechar',
+                      style: TextStyle(
+                          color: Color.fromRGBO(28, 88, 124, 1),
+                          fontSize: 15)),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => VacinasPet()));
+                  },
                 ),
               )
                   :
@@ -312,7 +328,7 @@ class VacinasPetPageState extends State<VacinasPetPage> {
     );
   }
   Future<UserPets> getPets() async {
-    log('loading...');
+    log('loading... pegando peets 1');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var user = prefs.get('user');
     var expressUser = jsonDecode(user)['express'];

@@ -444,7 +444,7 @@ class CadastroPetPageState extends State<CadastroPetPage> {
     var expressUser = jsonDecode(user)['express'];
     var usuario = expressUser[0]['email'];
     final response = await http.post(
-      Uri.parse('http://localhost:5000/pet/cadastro'),
+      Uri.parse('http://localhost:5000/pets/cadastro'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

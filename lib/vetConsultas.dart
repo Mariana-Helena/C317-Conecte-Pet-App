@@ -196,45 +196,45 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
                       )
                           :
                       Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children:[
-                        ListView.separated(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: selectedPetNome.length,
-                          separatorBuilder: (BuildContext context, int index) => Divider(),
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                              title: Text('Nome do Pet: ${selectedPetNome[index]}'+' | ' + 'Dono do Pet: ${selectedDonoEmail[index]}' ),
-                              onTap: () {
-                                getConsultas(selectedPetId[index]);
-                                openDialog = true;
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children:[
+                            ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: selectedPetNome.length,
+                              separatorBuilder: (BuildContext context, int index) => Divider(),
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: Text('Nome do Pet: ${selectedPetNome[index]}'+' | ' + 'Dono do Pet: ${selectedDonoEmail[index]}' ),
+                                  onTap: () {
+                                    getConsultas(selectedPetId[index]);
+                                    openDialog = true;
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          height: 60,
-                          width: 200,
-                          decoration:
-                          BoxDecoration(color: Color.fromRGBO(122, 150, 172, 1)),
-                          child: FlatButton(
-                            disabledColor: Color.fromRGBO(238, 238, 238, 1),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) => ConsultasPet()));
-                              //para testar
-                            },
-                            child: Text(
-                              'Voltar',
-                              style: TextStyle(color: Colors.white, fontSize: 15),
                             ),
-                          ),
-                        ),
-                        ])
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              height: 60,
+                              width: 200,
+                              decoration:
+                              BoxDecoration(color: Color.fromRGBO(122, 150, 172, 1)),
+                              child: FlatButton(
+                                disabledColor: Color.fromRGBO(238, 238, 238, 1),
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) => ConsultasPet()));
+                                  //para testar
+                                },
+                                child: Text(
+                                  'Voltar',
+                                  style: TextStyle(color: Colors.white, fontSize: 15),
+                                ),
+                              ),
+                            ),
+                          ])
                     ])
             ))
     );
@@ -247,7 +247,7 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
     var expressUser = jsonDecode(user)['express'];
     var crmv = expressUser[0]['crmv'];
     final response = await http.get(
-      Uri.parse('http://localhost:5000/consultas/vet/${crmv}'),
+      Uri.parse('http://localhost:5000/veterinario/consultas/${crmv}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -340,4 +340,3 @@ class VetConsultasPetPageState extends State<VetConsultasPetPage> {
   }
 
 }
-
