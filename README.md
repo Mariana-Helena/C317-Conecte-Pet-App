@@ -35,15 +35,43 @@ Com o desenvolvimento da aplicação o agendamento de consultas pode ser agiliza
 - Visualizar consultas agendadas 
 - Excluir registro de consulta
 
-## Getting Started
+### 🚀 Começando
+ Para obter uma cópia do projeto a fim de operá-lo/testá-lo, clone o repositório em uma pasta na sua máquina: 
 
-This project is a starting point for a Flutter application.
+```
+git clone https://github.com/Mariana-Helena/C317-Conecte-Pet-App.git
+```
 
-A few resources to get you started if this is your first Flutter project:
+### 📋 Pré-requisitos 
+- flutter
+- dart
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### 🛠️ Construído com
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**IDE**: [Android Studio](https://developer.android.com/studio)
+
+**Front-End**: [Flutter](https://flutter.dev/)
+
+**Back-End**: [NodeJS](https://nodejs.org/en/)
+
+**Linguagens**: [Dart](https://dart.dev/)
+
+**Armazenamento de dados**: [MongoDB Atlas](https://www.mongodb.com/)
+
+**Controle de versões**: [GitHub](https://github.com/)
+
+**Interface Gráfica**: [Material- Library](https://api.flutter.dev/flutter/material/material-library.html)
+
+
+## ✒️ Autores
+
+* **Mariana Helena Inês Moreira** - [Mariana](https://github.com/Mariana-Helena)
+* **Sinara Pimenta Medeiros** - [Sinara](https://github.com/SinaraPimenta)
+
+### 📄 Licença
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://badges.mit-license.org/)
+
+Este projeto está sob a licença MIT - veja o arquivo [LICENSE.txt](https://github.com/Mariana-Helena/C317-Conecte-Pet-Web/blob/main/LICENSE) para detalhes.
+
+⌨️ com ❤️ por Mariana e Sinara 😊
+
